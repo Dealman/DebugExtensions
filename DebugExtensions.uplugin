@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Debug Extensions",
+	"Description": "Extends some blueprint nodes used for debugging",
+	"Category": "Blueprints",
+	"CreatedBy": "Dealman",
+	"CreatedByURL": "https://github.com/Dealman/DebugExtensions",
+	"DocsURL": "https://github.com/Dealman/DebugExtensions",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "DebugExtensions",
+			"Type": "DeveloperTool",
+			"LoadingPhase": "PostEngineInit"
+		}
+	]
+}
