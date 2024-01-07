@@ -20,14 +20,6 @@
 #include "HAL/IConsoleManager.h"
 // START OF EXTENDED NATIVE DRAWING METHODS
 
-// namespace UE::Blueprint::Private
-// {
-// 	bool bBlamePrintString = false;
-// 	FAutoConsoleVariableRef CVarBlamePrintString(TEXT("bp.BlamePrintString"), 
-// 		bBlamePrintString,
-// 		TEXT("When true, prints the Blueprint Asset and Function that generated calls to Print String. Useful for tracking down screen message spam."));
-// }
-
 void UExtendedDebugLibrary::DrawDebugPointEx(const UObject* WorldContextObject, const FTransform WorldTransform, FVector Location, float Size, FLinearColor DebugColor, ESceneDepthPriority DepthPriority, bool bIsPersistent, float Duration)
 {
 #if ENABLE_DRAW_DEBUG
