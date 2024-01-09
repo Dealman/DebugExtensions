@@ -2,6 +2,7 @@
 
 #include "ExtendedDebugLibrary.h"
 #include "ExtendedDebugHelpers.h"
+#include "ExtendedDebugMacros.h"
 #include "UnrealEngine.h"
 #include "Engine/StaticMesh.h"
 #include "StaticMeshDescription.h"
@@ -19,14 +20,6 @@
 #include "Blueprint/BlueprintSupport.h"
 #include "HAL/IConsoleManager.h"
 // START OF EXTENDED NATIVE DRAWING METHODS
-
-// namespace UE::Blueprint::Private
-// {
-// 	bool bBlamePrintString = false;
-// 	FAutoConsoleVariableRef CVarBlamePrintString(TEXT("bp.BlamePrintString"), 
-// 		bBlamePrintString,
-// 		TEXT("When true, prints the Blueprint Asset and Function that generated calls to Print String. Useful for tracking down screen message spam."));
-// }
 
 void UExtendedDebugLibrary::DrawDebugPointEx(const UObject* WorldContextObject, const FTransform WorldTransform, FVector Location, float Size, FLinearColor DebugColor, ESceneDepthPriority DepthPriority, bool bIsPersistent, float Duration)
 {
@@ -260,7 +253,7 @@ void UExtendedDebugLibrary::DrawDebugFloatHistoryLocationEx(const UObject* World
 
 void UExtendedDebugLibrary::DrawDebugMesh(const UObject* WorldContextObject, UStaticMesh* StaticMesh, const FTransform WorldTransform, FVector Location, FRotator Rotation, int32 LOD, FLinearColor DebugColor, ESceneDepthPriority DepthPriority, bool bIsPersistent, float Duration, float Thickness)
 {
-	// TODO: Optimization - maybe cache the edge vertex positions instead of doing it at runtime instead check of changes and update if necessary
+	// TODO: Optimization - maybe cache the edge vertex positions instead of doing it at runtime, check for changes and update if necessary
 	#if ENABLE_DRAW_DEBUG
 	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
@@ -282,6 +275,8 @@ void UExtendedDebugLibrary::DrawDebugMesh(const UObject* WorldContextObject, USt
 				FVector EdgeStart = MeshDescription->GetVertexPosition(EdgeVertices[0]);
 				FVector EdgeEnd = MeshDescription->GetVertexPosition(EdgeVertices[1]);
 				DrawDebugLine(World, Location + EdgeStart, Location + EdgeEnd, DebugColor.ToFColor(true), bIsPersistent, Duration, DepthPriority, Thickness);
+				//UE_DEBUGMESSAGE("Hello World", 2, 15.0);
+				//GEngine->AddOnScreenDebugMessage()
 			}
 		}
 	}
@@ -303,13 +298,13 @@ bool UExtendedDebugLibrary::LineTraceSingleEx(const UObject* WorldContextObject,
 	ECollisionChannel CollisionChannel = UEngineTypes::ConvertToCollisionChannel(TraceChannel);
 
 	static const FName LineTraceSingleName(TEXT("LineTraceSingleExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->LineTraceSingleByChannel(HitResult, Start, End, CollisionChannel, Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugLineTraceSingleEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugLineTraceSingleEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -324,13 +319,13 @@ bool UExtendedDebugLibrary::LineTraceSingleByProfile(const UObject* WorldContext
 	}
 
 	static const FName LineTraceSingleName(TEXT("LineTraceSingleByProfileExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->LineTraceSingleByProfile(HitResult, Start, End, ProfileName, Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugLineTraceSingleEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugLineTraceSingleEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -345,9 +340,9 @@ bool UExtendedDebugLibrary::LineTraceSingleForObjectsEx(const UObject* WorldCont
 	}
 
 	static const FName LineTraceSingleName(TEXT("LineTraceSingleForObjectsExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
-	FCollisionObjectQueryParams ObjectParams = UExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
+	FCollisionObjectQueryParams ObjectParams = ExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
 	if (ObjectParams.IsValid() == false)
 	{
 		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
@@ -358,7 +353,7 @@ bool UExtendedDebugLibrary::LineTraceSingleForObjectsEx(const UObject* WorldCont
 	bool const bHit = World ? World->LineTraceSingleByObjectType(HitResult, Start, End, ObjectParams, Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugLineTraceSingleEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugLineTraceSingleEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -375,13 +370,13 @@ bool UExtendedDebugLibrary::LineTraceMulti(const UObject* WorldContextObject, co
 	ECollisionChannel CollisionChannel = UEngineTypes::ConvertToCollisionChannel(TraceChannel);
 
 	static const FName LineTraceMultiName(TEXT("LineTraceMultiExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->LineTraceMultiByChannel(HitResults, Start, End, CollisionChannel, Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugLineTraceMultiEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugLineTraceMultiEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -396,13 +391,13 @@ bool UExtendedDebugLibrary::LineTraceMultiByProfile(const UObject* WorldContextO
 	}
 	
 	static const FName LineTraceMultiName(TEXT("LineTraceMultiByProfileExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->LineTraceMultiByProfile(HitResults, Start, End, ProfileName, Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugLineTraceMultiEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugLineTraceMultiEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -417,9 +412,9 @@ bool UExtendedDebugLibrary::LineTraceMultiForObjects(const UObject* WorldContext
 	}
 	
 	static const FName LineTraceMultiName(TEXT("LineTraceMultiForObjectsExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(LineTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
-	FCollisionObjectQueryParams ObjectParams = UExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
+	FCollisionObjectQueryParams ObjectParams = ExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
 	if (ObjectParams.IsValid() == false)
 	{
 		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
@@ -430,7 +425,7 @@ bool UExtendedDebugLibrary::LineTraceMultiForObjects(const UObject* WorldContext
 	bool const bHit = World ? World->LineTraceMultiByObjectType(HitResults, Start, End, ObjectParams, Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugLineTraceMultiEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugLineTraceMultiEx(World, Start, End, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TraceThickness, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -445,13 +440,13 @@ bool UExtendedDebugLibrary::BoxTraceSingleEx(const UObject* WorldContextObject, 
 	}
 	
 	static const FName BoxTraceSingleName(TEXT("BoxTraceSingleExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepSingleByChannel(HitResult, Start, End, Orientation.Quaternion(), UEngineTypes::ConvertToCollisionChannel(TraceChannel), FCollisionShape::MakeBox(HalfSize), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugBoxTraceSingleEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugBoxTraceSingleEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -466,14 +461,14 @@ bool UExtendedDebugLibrary::BoxTraceSingleByProfileEx(const UObject* WorldContex
 	}
 	
 	static const FName BoxTraceSingleName(TEXT("BoxTraceSingleByProfileExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 
 	bool const bHit = World ? World->SweepSingleByProfile(HitResult, Start, End, Orientation.Quaternion(), ProfileName, FCollisionShape::MakeBox(HalfSize), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugBoxTraceSingleEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugBoxTraceSingleEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -488,12 +483,12 @@ bool UExtendedDebugLibrary::BoxTraceSingleForObjectsEx(const UObject* WorldConte
 	}
 	
 	static const FName BoxTraceSingleName(TEXT("BoxTraceSingleForObjectsExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	TArray<TEnumAsByte<ECollisionChannel>> CollisionObjectTraces;
 	CollisionObjectTraces.AddUninitialized(ObjectTypes.Num());
 
-	FCollisionObjectQueryParams ObjectParams = UExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
+	FCollisionObjectQueryParams ObjectParams = ExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
 	if (ObjectParams.IsValid() == false)
 	{
 		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
@@ -504,7 +499,7 @@ bool UExtendedDebugLibrary::BoxTraceSingleForObjectsEx(const UObject* WorldConte
 	bool const bHit = World ? World->SweepSingleByObjectType(HitResult, Start, End, Orientation.Quaternion(), ObjectParams, FCollisionShape::MakeBox(HalfSize), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugBoxTraceSingleEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugBoxTraceSingleEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -519,13 +514,13 @@ bool UExtendedDebugLibrary::BoxTraceMultiEx(const UObject* WorldContextObject, c
 	}
 	
 	static const FName BoxTraceMultiName(TEXT("BoxTraceMultiExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepMultiByChannel(HitResults, Start, End, Orientation.Quaternion(), UEngineTypes::ConvertToCollisionChannel(TraceChannel), FCollisionShape::MakeBox(HalfSize), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugBoxTraceMultiEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugBoxTraceMultiEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -540,13 +535,13 @@ bool UExtendedDebugLibrary::BoxTraceMultiByProfileEx(const UObject* WorldContext
 	}
 	
 	static const FName BoxTraceMultiName(TEXT("BoxTraceMultiByProfileExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepMultiByProfile(HitResults, Start, End, Orientation.Quaternion(), ProfileName, FCollisionShape::MakeBox(HalfSize), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugBoxTraceMultiEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugBoxTraceMultiEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -561,9 +556,9 @@ bool UExtendedDebugLibrary::BoxTraceMultiForObjectsEx(const UObject* WorldContex
 	}
 	
 	static const FName BoxTraceMultiName(TEXT("BoxTraceMultiForObjectsExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(BoxTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
-	FCollisionObjectQueryParams ObjectParams = UExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
+	FCollisionObjectQueryParams ObjectParams = ExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
 	if (ObjectParams.IsValid() == false)
 	{
 		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
@@ -574,7 +569,7 @@ bool UExtendedDebugLibrary::BoxTraceMultiForObjectsEx(const UObject* WorldContex
 	bool const bHit = World ? World->SweepMultiByObjectType(HitResults, Start, End, Orientation.Quaternion(), ObjectParams, FCollisionShape::MakeBox(HalfSize), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugBoxTraceMultiEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugBoxTraceMultiEx(World, Start, End, HalfSize, Orientation, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -591,13 +586,13 @@ bool UExtendedDebugLibrary::SphereTraceSingleEx(const UObject* WorldContextObjec
 	ECollisionChannel CollisionChannel = UEngineTypes::ConvertToCollisionChannel(TraceChannel);
 
 	static const FName SphereTraceSingleName(TEXT("SphereTraceSingleExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, CollisionChannel, FCollisionShape::MakeSphere(Radius), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugSphereTraceSingleEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugSphereTraceSingleEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -612,13 +607,13 @@ bool UExtendedDebugLibrary::SphereTraceSingleByProfileEx(const UObject* WorldCon
 	}
 	
 	static const FName SphereTraceSingleName(TEXT("SphereTraceSingleByProfileExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepSingleByProfile(HitResult, Start, End, FQuat::Identity, ProfileName, FCollisionShape::MakeSphere(Radius), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugSphereTraceSingleEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugSphereTraceSingleEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -633,9 +628,9 @@ bool UExtendedDebugLibrary::SphereTraceSingleForObjectsEx(const UObject* WorldCo
 	}
 	
 	static const FName SphereTraceSingleName(TEXT("SphereTraceSingleForObjectsExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
-	FCollisionObjectQueryParams ObjectParams = UExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
+	FCollisionObjectQueryParams ObjectParams = ExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
 	if (ObjectParams.IsValid() == false)
 	{
 		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
@@ -646,7 +641,7 @@ bool UExtendedDebugLibrary::SphereTraceSingleForObjectsEx(const UObject* WorldCo
 	bool const bHit = World ? World->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, ObjectParams, FCollisionShape::MakeSphere(Radius), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugSphereTraceSingleEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugSphereTraceSingleEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -663,13 +658,13 @@ bool UExtendedDebugLibrary::SphereTraceMultiEx(const UObject* WorldContextObject
 	ECollisionChannel CollisionChannel = UEngineTypes::ConvertToCollisionChannel(TraceChannel);
 
 	static const FName SphereTraceMultiName(TEXT("SphereTraceMultiExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepMultiByChannel(HitResults, Start, End, FQuat::Identity, CollisionChannel, FCollisionShape::MakeSphere(Radius), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugSphereTraceMultiEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugSphereTraceMultiEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -684,13 +679,13 @@ bool UExtendedDebugLibrary::SphereTraceMultiByProfileEx(const UObject* WorldCont
 	}
 	
 	static const FName SphereTraceMultiName(TEXT("SphereTraceMultiByProfileExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepMultiByProfile(HitResults, Start, End, FQuat::Identity, ProfileName, FCollisionShape::MakeSphere(Radius), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugSphereTraceMultiEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugSphereTraceMultiEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -705,9 +700,9 @@ bool UExtendedDebugLibrary::SphereTraceMultiForObjectsEx(const UObject* WorldCon
 	}
 	
 	static const FName SphereTraceMultiName(TEXT("SphereTraceMultiForObjectsExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(SphereTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
-	FCollisionObjectQueryParams ObjectParams = UExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
+	FCollisionObjectQueryParams ObjectParams = ExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
 	if (ObjectParams.IsValid() == false)
 	{
 		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
@@ -718,7 +713,7 @@ bool UExtendedDebugLibrary::SphereTraceMultiForObjectsEx(const UObject* WorldCon
 	bool const bHit = World ? World->SweepMultiByObjectType(HitResults, Start, End, FQuat::Identity, ObjectParams, FCollisionShape::MakeSphere(Radius), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugSphereTraceMultiEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugSphereTraceMultiEx(World, Start, End, Radius, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -735,13 +730,13 @@ bool UExtendedDebugLibrary::CapsuleTraceSingleEx(const UObject* WorldContextObje
 	ECollisionChannel CollisionChannel = UEngineTypes::ConvertToCollisionChannel(TraceChannel);
 
 	static const FName CapsuleTraceSingleName(TEXT("CapsuleTraceSingleExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, CollisionChannel, FCollisionShape::MakeCapsule(Radius, HalfHeight), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugCapsuleTraceSingleEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugCapsuleTraceSingleEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -756,13 +751,13 @@ bool UExtendedDebugLibrary::CapsuleTraceSingleByProfileEx(const UObject* WorldCo
 	}
 	
 	static const FName CapsuleTraceSingleName(TEXT("CapsuleTraceSingleByProfileExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepSingleByProfile(HitResult, Start, End, FQuat::Identity, ProfileName, FCollisionShape::MakeCapsule(Radius, HalfHeight), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugCapsuleTraceSingleEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugCapsuleTraceSingleEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -777,9 +772,9 @@ bool UExtendedDebugLibrary::CapsuleTraceSingleForObjectsEx(const UObject* WorldC
 	}
 	
 	static const FName CapsuleTraceSingleName(TEXT("CapsuleTraceSingleForObjectsExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceSingleName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
-	FCollisionObjectQueryParams ObjectParams = UExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
+	FCollisionObjectQueryParams ObjectParams = ExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
 	if (ObjectParams.IsValid() == false)
 	{
 		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
@@ -790,7 +785,7 @@ bool UExtendedDebugLibrary::CapsuleTraceSingleForObjectsEx(const UObject* WorldC
 	bool const bHit = World ? World->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, ObjectParams, FCollisionShape::MakeCapsule(Radius, HalfHeight), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugCapsuleTraceSingleEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugCapsuleTraceSingleEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResult, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -807,13 +802,13 @@ bool UExtendedDebugLibrary::CapsuleTraceMultiEx(const UObject* WorldContextObjec
 	ECollisionChannel CollisionChannel = UEngineTypes::ConvertToCollisionChannel(TraceChannel);
 
 	static const FName CapsuleTraceMultiName(TEXT("CapsuleTraceMultiExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepMultiByChannel(HitResults, Start, End, FQuat::Identity, CollisionChannel, FCollisionShape::MakeCapsule(Radius, HalfHeight), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugCapsuleTraceMultiEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugCapsuleTraceMultiEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;	
@@ -828,13 +823,13 @@ bool UExtendedDebugLibrary::CapsuleTraceMultiByProfileEx(const UObject* WorldCon
 	}
 	
 	static const FName CapsuleTraceMultiName(TEXT("CapsuleTraceMultiByProfileExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	bool const bHit = World ? World->SweepMultiByProfile(HitResults, Start, End, FQuat::Identity, ProfileName, FCollisionShape::MakeCapsule(Radius, HalfHeight), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugCapsuleTraceMultiEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugCapsuleTraceMultiEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -849,9 +844,9 @@ bool UExtendedDebugLibrary::CapsuleTraceMultiForObjectsEx(const UObject* WorldCo
 	}
 	
 	static const FName CapsuleTraceMultiName(TEXT("CapsuleTraceMultiForObjectsExtended"));
-	FCollisionQueryParams Params = UExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
+	FCollisionQueryParams Params = ExtendedDebugHelpers::ConfigureCollisionParamsEx(CapsuleTraceMultiName, bTraceComplex, ActorsToIgnore, bIgnoreSelf, WorldContextObject);
 
-	FCollisionObjectQueryParams ObjectParams = UExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
+	FCollisionObjectQueryParams ObjectParams = ExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(ObjectTypes);
 	if (ObjectParams.IsValid() == false)
 	{
 		UE_LOG(LogBlueprintUserMessages, Warning, TEXT("Invalid object types"));
@@ -862,7 +857,7 @@ bool UExtendedDebugLibrary::CapsuleTraceMultiForObjectsEx(const UObject* WorldCo
 	bool const bHit = World ? World->SweepMultiByObjectType(HitResults, Start, End, FQuat::Identity, ObjectParams, FCollisionShape::MakeCapsule(Radius, HalfHeight), Params) : false;
 
 #if ENABLE_DRAW_DEBUG
-	UExtendedDebugHelpers::DrawDebugCapsuleTraceMultiEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
+	ExtendedDebugHelpers::DrawDebugCapsuleTraceMultiEx(World, Start, End, Radius, HalfHeight, DrawDebugType, TraceDepthPriority, bHit, HitResults, TraceColor, TraceHitColor, TracePointSize, TraceDrawTime);
 #endif
 
 	return bHit;
@@ -976,7 +971,8 @@ void UExtendedDebugLibrary::LogStringEx(const UObject* WorldContextObject, const
 void UExtendedDebugLibrary::PrintStringEx(const UObject* WorldContextObject, const FString& InString, bool bPrintToScreen, bool bPrintToLog, bool bPrintToConsole, bool bNewerOnTop, FLinearColor TextColor, float Duration, const FName Key, const FVector2D TextScale)
 {
 #if !(UE_BUILD_SHIPPING || UE_BUILD_TEST) || USE_LOGGING_IN_SHIPPING // Do not Print in Shipping or Test unless explicitly enabled.
-
+	UE_SCREENMESSAGE_ERROR("This is an error, displays for 15s");
+	UE_SCREENMESSAGE_CUSTOM_EX("This is an error, custom", 3, 15.0, FColor::Emerald);
 	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	FString Prefix;
 	if (World)

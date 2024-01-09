@@ -1,14 +1,15 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0",
+	"VersionName": "1.0.0.0",
+	"EngineVersion": "5.3",
 	"FriendlyName": "Debug Extensions",
 	"Description": "Extends some blueprint nodes used for debugging",
 	"Category": "Blueprints",
 	"CreatedBy": "Dealman",
 	"CreatedByURL": "https://github.com/Dealman/DebugExtensions",
 	"DocsURL": "https://github.com/Dealman/DebugExtensions",
-	"MarketplaceURL": "",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/abc83c99e1e5452288742ae8846126ec",
 	"SupportURL": "",
 	"CanContainContent": false,
 	"IsBetaVersion": true,
@@ -18,7 +19,8 @@
 		{
 			"Name": "DebugExtensions",
 			"Type": "DeveloperTool",
-			"LoadingPhase": "PostEngineInit"
+			"LoadingPhase": "PostEngineInit",
+			"WhitelistPlatforms": ["Win64", "Linux"]
 		}
 	]
 }

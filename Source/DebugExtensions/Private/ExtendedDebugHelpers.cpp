@@ -5,7 +5,7 @@
 #include "PhysicsEngine/PhysicsSettings.h"
 
 
-FCollisionQueryParams UExtendedDebugHelpers::ConfigureCollisionParamsEx(FName TraceTag, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, bool bIgnoreSelf, const UObject* WorldContextObject)
+FCollisionQueryParams ExtendedDebugHelpers::ConfigureCollisionParamsEx(FName TraceTag, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, bool bIgnoreSelf, const UObject* WorldContextObject)
 {
 	FCollisionQueryParams Params(TraceTag, SCENE_QUERY_STAT_ONLY(KismetTraceUtils), bTraceComplex);
 	Params.bReturnPhysicalMaterial = true;
@@ -37,7 +37,7 @@ FCollisionQueryParams UExtendedDebugHelpers::ConfigureCollisionParamsEx(FName Tr
 	return Params;
 }
 
-FCollisionObjectQueryParams UExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(const TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes)
+FCollisionObjectQueryParams ExtendedDebugHelpers::ConfigureCollisionObjectParamsEx(const TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes)
 {
 	TArray<TEnumAsByte<ECollisionChannel>> CollisionObjectTraces;
 	CollisionObjectTraces.AddUninitialized(ObjectTypes.Num());
@@ -64,7 +64,7 @@ FCollisionObjectQueryParams UExtendedDebugHelpers::ConfigureCollisionObjectParam
 	return ObjectParams;
 }
 
-void UExtendedDebugHelpers::DrawDebugLineTraceSingleEx(const UWorld* World, const FVector& Start, const FVector& End, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const FHitResult& HitResult, FLinearColor TraceColor, FLinearColor TraceHitColor, float Thickness, float PointSize, float DrawTime)
+void ExtendedDebugHelpers::DrawDebugLineTraceSingleEx(const UWorld* World, const FVector& Start, const FVector& End, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const FHitResult& HitResult, FLinearColor TraceColor, FLinearColor TraceHitColor, float Thickness, float PointSize, float DrawTime)
 {
 	if (DrawDebugType != EDrawDebugTrace::None)
 	{
@@ -84,7 +84,7 @@ void UExtendedDebugHelpers::DrawDebugLineTraceSingleEx(const UWorld* World, cons
 	}
 }
 
-void UExtendedDebugHelpers::DrawDebugLineTraceMultiEx(const UWorld* World, const FVector& Start, const FVector& End, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const TArray<FHitResult>& HitResults, FLinearColor TraceColor, FLinearColor TraceHitColor, float Thickness, float PointSize, float DrawTime)
+void ExtendedDebugHelpers::DrawDebugLineTraceMultiEx(const UWorld* World, const FVector& Start, const FVector& End, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const TArray<FHitResult>& HitResults, FLinearColor TraceColor, FLinearColor TraceHitColor, float Thickness, float PointSize, float DrawTime)
 {
 	if (DrawDebugType != EDrawDebugTrace::None)
 	{
@@ -110,7 +110,7 @@ void UExtendedDebugHelpers::DrawDebugLineTraceMultiEx(const UWorld* World, const
 	}
 }
 
-void UExtendedDebugHelpers::DrawDebugBoxTraceSingleEx(const UWorld* World, const FVector& Start, const FVector& End, const FVector& HalfSize, const FRotator& Orientation, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const FHitResult& HitResult, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
+void ExtendedDebugHelpers::DrawDebugBoxTraceSingleEx(const UWorld* World, const FVector& Start, const FVector& End, const FVector& HalfSize, const FRotator& Orientation, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const FHitResult& HitResult, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
 {
 	if (DrawDebugType != EDrawDebugTrace::None && (World != nullptr))
 	{
@@ -130,7 +130,7 @@ void UExtendedDebugHelpers::DrawDebugBoxTraceSingleEx(const UWorld* World, const
 	}
 }
 
-void UExtendedDebugHelpers::DrawDebugBoxTraceMultiEx(const UWorld* World, const FVector& Start, const FVector& End, const FVector& HalfSize, const FRotator& Orientation, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const TArray<FHitResult>& HitResults, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
+void ExtendedDebugHelpers::DrawDebugBoxTraceMultiEx(const UWorld* World, const FVector& Start, const FVector& End, const FVector& HalfSize, const FRotator& Orientation, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const TArray<FHitResult>& HitResults, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
 {
 	if (DrawDebugType != EDrawDebugTrace::None && (World != nullptr))
 	{
@@ -156,7 +156,7 @@ void UExtendedDebugHelpers::DrawDebugBoxTraceMultiEx(const UWorld* World, const 
 	}
 }
 
-void UExtendedDebugHelpers::DrawDebugSphereTraceSingleEx(const UWorld* World, const FVector& Start, const FVector& End, float Radius, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const FHitResult& HitResult, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
+void ExtendedDebugHelpers::DrawDebugSphereTraceSingleEx(const UWorld* World, const FVector& Start, const FVector& End, float Radius, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const FHitResult& HitResult, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
 {
 	if (DrawDebugType != EDrawDebugTrace::None)
 	{
@@ -176,7 +176,7 @@ void UExtendedDebugHelpers::DrawDebugSphereTraceSingleEx(const UWorld* World, co
 	}
 }
 
-void UExtendedDebugHelpers::DrawDebugSphereTraceMultiEx(const UWorld* World, const FVector& Start, const FVector& End, float Radius, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const TArray<FHitResult>& HitResults, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
+void ExtendedDebugHelpers::DrawDebugSphereTraceMultiEx(const UWorld* World, const FVector& Start, const FVector& End, float Radius, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const TArray<FHitResult>& HitResults, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
 {
 	if (DrawDebugType != EDrawDebugTrace::None)
 	{
@@ -202,7 +202,7 @@ void UExtendedDebugHelpers::DrawDebugSphereTraceMultiEx(const UWorld* World, con
 	}
 }
 
-void UExtendedDebugHelpers::DrawDebugCapsuleTraceSingleEx(const UWorld* World, const FVector& Start, const FVector& End, float Radius, float HalfHeight, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const FHitResult& HitResult, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
+void ExtendedDebugHelpers::DrawDebugCapsuleTraceSingleEx(const UWorld* World, const FVector& Start, const FVector& End, float Radius, float HalfHeight, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const FHitResult& HitResult, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
 {
 	if (DrawDebugType != EDrawDebugTrace::None)
 	{
@@ -228,7 +228,7 @@ void UExtendedDebugHelpers::DrawDebugCapsuleTraceSingleEx(const UWorld* World, c
 	}
 }
 
-void UExtendedDebugHelpers::DrawDebugCapsuleTraceMultiEx(const UWorld* World, const FVector& Start, const FVector& End, float Radius, float HalfHeight, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const TArray<FHitResult>& HitResults, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
+void ExtendedDebugHelpers::DrawDebugCapsuleTraceMultiEx(const UWorld* World, const FVector& Start, const FVector& End, float Radius, float HalfHeight, EDrawDebugTrace::Type DrawDebugType, ESceneDepthPriority DepthPriority, bool bHit, const TArray<FHitResult>& HitResults, FLinearColor TraceColor, FLinearColor TraceHitColor, float PointSize, float DrawTime)
 {
 	if (DrawDebugType != EDrawDebugTrace::None)
 	{

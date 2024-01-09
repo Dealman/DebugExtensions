@@ -25,10 +25,10 @@ enum ESceneDepthPriority : int
 /**
  * Contains static helper methods for drawing traces and setting up collision parameters
  */
-UCLASS()
-class DEBUGEXTENSIONS_API UExtendedDebugHelpers : public UObject
+//UCLASS()
+class DEBUGEXTENSIONS_API ExtendedDebugHelpers// : public UObject
 {
-	GENERATED_BODY()
+	//GENERATED_BODY()
 	
 public:
 	static FCollisionQueryParams ConfigureCollisionParamsEx(FName TraceTag, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, bool bIgnoreSelf, const UObject* WorldContextObject);
