@@ -1,7 +1,17 @@
 ﻿// Copyright 2023 'Dealman' - All Rights Reserved
 
 #include "ExtendedDebugHelpers.h"
-#include "KismetTraceUtils.h"
+#include "Runtime/Launch/Resources/Version.h"
+
+#if ENGINE_MAJOR_VERSION == 5
+	#if ENGINE_MINOR_VERSION >= 3
+		#include "KismetTraceUtils.h"
+	#endif
+	#if ENGINE_MINOR_VERSION <= 2
+		#include "Runtime/Engine/Private/KismetTraceUtils.h"
+		#include "Kismet/KismetSystemLibrary.h"
+	#endif
+#endif
 #include "PhysicsEngine/PhysicsSettings.h"
 
 

@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0.0.0",
+	"VersionName": "1.1.0.0",
 	"EngineVersion": "5.3",
 	"FriendlyName": "Debug Extensions",
 	"Description": "Extends some blueprint nodes used for debugging",
@@ -12,7 +12,7 @@
 	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/abc83c99e1e5452288742ae8846126ec",
 	"SupportURL": "",
 	"CanContainContent": false,
-	"IsBetaVersion": true,
+	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
 	"Installed": false,
 	"Modules": [
@@ -20,7 +20,7 @@
 			"Name": "DebugExtensions",
 			"Type": "DeveloperTool",
 			"LoadingPhase": "PostEngineInit",
-			"WhitelistPlatforms": ["Win64", "Linux"]
+			"WhitelistPlatforms": ["Win64", "Linux", "IOS", "Linux"]
 		}
 	]
 }

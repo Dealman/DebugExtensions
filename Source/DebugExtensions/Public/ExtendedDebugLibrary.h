@@ -8,8 +8,9 @@
 #include "ExtendedDebugHelpers.h"
 #include "ExtendedDebugLibrary.generated.h"
 
+
 UENUM(BlueprintType)
-enum ELogVerbosityEx : uint8
+enum ELogVerbosityEx
 {
 	/** Not used */
 	NoLogging		= 0,
