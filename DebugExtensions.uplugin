@@ -20,7 +20,7 @@
 			"Name": "DebugExtensions",
 			"Type": "DeveloperTool",
 			"LoadingPhase": "PostEngineInit",
-			"WhitelistPlatforms": ["Win64", "Mac", "IOS", "Android", "Linux", "LinuxArm64", "TVOS"]
+			"WhitelistPlatforms": ["Win64", "HoloLens", "Mac", "IOS", "Android", "Linux", "LinuxArm64", "TVOS"]
 		}
 	]
 }
