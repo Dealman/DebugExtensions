@@ -971,8 +971,6 @@ void UExtendedDebugLibrary::LogStringEx(const UObject* WorldContextObject, const
 void UExtendedDebugLibrary::PrintStringEx(const UObject* WorldContextObject, const FString& InString, bool bPrintToScreen, bool bPrintToLog, bool bPrintToConsole, bool bNewerOnTop, FLinearColor TextColor, float Duration, const FName Key, const FVector2D TextScale)
 {
 #if !(UE_BUILD_SHIPPING || UE_BUILD_TEST) || USE_LOGGING_IN_SHIPPING // Do not Print in Shipping or Test unless explicitly enabled.
-	UE_SCREENMESSAGE_ERROR("This is an error, displays for 15s");
-	UE_SCREENMESSAGE_CUSTOM_EX("This is an error, custom", 3, 15.0, FColor::Emerald);
 	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	FString Prefix;
 	if (World)
