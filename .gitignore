@@ -75,3 +75,9 @@ DerivedDataCache/*
 
 # JetBrains Rider
 .idea/*
+
+# Used for local plugin building
+LocalBuilds/*
+
+# Used for local plugin building
+BatchFiles/*
